@@ -1,22 +1,26 @@
-import {
-    List,
-    ListItem,
-    Link
-  } from '@chakra-ui/react'
+import { Box, Flex, Button, VStack } from "@chakra-ui/react";
 
 const Home = () => {
   return (
     <>
-        <List>
-            <ListItem>
-                <Link href={`/login`}>Login</Link>
-            </ListItem>
-            <ListItem>
-                <Link href={`/register`}>Sign Up</Link>
-            </ListItem>
-        </List>
+      <Flex justifyContent="center" height={"100%"}>
+        <VStack
+          bg={"beige"}
+          borderRadius="25px"
+          boxShadow={"lg"}
+          boxSize={{ base: "sm", lg: "lg", md: "md" }}
+          mt={{ base: "50px", lg: "75px" }}
+        >
+          <Button w={"150px"} bg={"teal.200"}>
+            Login
+          </Button>
+          <Button w={"150px"} bg={"teal.200"}>
+            Register
+          </Button>
+        </VStack>
+      </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
