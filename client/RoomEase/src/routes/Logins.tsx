@@ -1,4 +1,4 @@
-import {Flex, Button, VStack } from "@chakra-ui/react";
+import { Flex, Button, VStack } from "@chakra-ui/react";
 
 const Logins = () => {
   return (
@@ -11,7 +11,7 @@ const Logins = () => {
           boxSize={{ base: "sm", lg: "lg", md: "md" }}
           mt={{ base: "50px", lg: "75px" }}
         >
-          <Button w={"150px"} bg={"teal.200"} > 
+          <Button w={"150px"} bg={"teal.200"}>
             Login
           </Button>
           <Button w={"150px"} bg={"teal.200"}>
