@@ -1,28 +1,29 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { ChakraProvider } from '@chakra-ui/react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import './index.css'
-import Home from './routes/Home'
-import NotFoundErrorPage from './routes/NotFoundErrorPage'
-import Login from './routes/Login'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { ChakraProvider } from "@chakra-ui/react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./index.css";
+import Logins from "./routes/Logins";
+import NotFoundErrorPage from "./routes/NotFoundErrorPage";
+import Home from "./routes/Home";
+import { theme } from "./theme";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Home />,
-    errorElement: <NotFoundErrorPage />
+    errorElement: <NotFoundErrorPage />,
   },
   {
-    path: '/login',
-    element: <Login />
+    path: "/userAccess",
+    element: <Logins />
   }
-])
+]);
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ChakraProvider>
-      <RouterProvider router={router}/>
+    <ChakraProvider theme={theme}>
+      <RouterProvider router={router} />
     </ChakraProvider>
   </React.StrictMode>
-)
+);
