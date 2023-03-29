@@ -1,22 +1,20 @@
-import { Flex, Button, VStack } from "@chakra-ui/react";
+import { Flex, Button, VStack, Text } from "@chakra-ui/react";
+import LoginForm from "../components/LoginForm";
 
 const Logins = () => {
   return (
     <>
       <Flex justifyContent="center" height={"100%"}>
         <VStack
-          bg={"beige"}
+          bg={"#E5E5E5"}
           borderRadius="25px"
           boxShadow={"lg"}
           boxSize={{ base: "sm", lg: "lg", md: "md" }}
           mt={{ base: "50px", lg: "75px" }}
         >
-          <Button w={"150px"} bg={"teal.200"}>
-            Login
-          </Button>
-          <Button w={"150px"} bg={"teal.200"}>
-            Register
-          </Button>
+          <Text m={"20px 0"} fontSize={"50px"}>RoomEase</Text>
+          
+          <LoginForm />
         </VStack>
       </Flex>
     </>
