@@ -32,22 +32,22 @@ const LoginForm = () => {
 
   return (
     <>
-      <Box w={"300px"}>
+      <Box w={"300px"} pb={"50px"} display="none">
         <Container as={"form"} onSubmit={handleSubmit(onSubmit)}>
           <Box textAlign={"center"}>
-            <Heading fontWeight={"bold"} fontSize={"20px"}>
+            <Heading fontSize={"20px"}>
               LOG IN
             </Heading>
           </Box>
 
-          <FormControl id="email" isInvalid={!!errors.email}>
-            <FormLabel>Email: </FormLabel>
+          <FormControl id="loginEmail" isInvalid={!!errors.email}>
+            <FormLabel>Email:</FormLabel>
             <Input type={"email"} bg={"white"} placeholder={"Email"} {...register("email")}/>
             <FormErrorMessage>{errors.email?.message }</FormErrorMessage>
           </FormControl>
 
-          <FormControl id="password" isInvalid={!!errors.password}>
-            <FormLabel mt={"5px"}>Password: </FormLabel>
+          <FormControl id="loginPassword" isInvalid={!!errors.password}>
+            <FormLabel>Password:</FormLabel>
             <Input type={"password"} bg={"white"} placeholder={"Password"}{...register("password")}/>
             <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
           </FormControl>
@@ -69,7 +69,7 @@ const LoginForm = () => {
           <Text>
             Don't have an account?{" "}
             <Button variant={"link"} color={"blue"}>
-              Sign up here!
+              Create one here!
             </Button>
           </Text>
         </Box>

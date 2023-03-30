@@ -1,20 +1,28 @@
-import { Flex, Button, VStack, Text } from "@chakra-ui/react";
+import { Flex, VStack, Text, Container, Box } from "@chakra-ui/react";
+import { Link as ReactRouterLink } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 
 const Logins = () => {
   return (
     <>
-      <Flex justifyContent="center" height={"100%"}>
+      <Flex justifyContent="center" height={"full"}>
         <VStack
           bg={"#E5E5E5"}
           borderRadius="25px"
           boxShadow={"lg"}
-          boxSize={{ base: "sm", lg: "lg", md: "md" }}
-          mt={{ base: "50px", lg: "75px" }}
+          // boxSize={{ base: "md", lg: "xl", md: "lg" }}
+          m={{ base: "50px 0", lg: "75px 0" }}
+          w={{ base: "350px", lg: "450px", sm:"350px", md:"400px"}}
         >
-          <Text m={"20px 0"} fontSize={"50px"}>RoomEase</Text>
+          <Container textAlign={"center"}>
+            <ReactRouterLink to="/">
+              <Text m={"20px 0"} fontSize={"50px"}>RoomEase</Text>
+            </ReactRouterLink>
+          </Container>
           
           <LoginForm />
+          <RegisterForm />
         </VStack>
       </Flex>
     </>
