@@ -7,6 +7,7 @@ import Logins from "./routes/Logins";
 import NotFoundErrorPage from "./routes/NotFoundErrorPage";
 import Home from "./routes/Home";
 import { theme } from "./theme";
+import Register from "./routes/Register";
 
 const router = createBrowserRouter([
   {
@@ -15,8 +16,12 @@ const router = createBrowserRouter([
     errorElement: <NotFoundErrorPage />,
   },
   {
-    path: "/userAccess",
+    path: "/login",
     element: <Logins />
+  },
+  {
+    path: "/signup",
+    element: <Register />
   }
 ]);
 

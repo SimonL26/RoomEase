@@ -24,12 +24,12 @@ const Home = () => {
             <Text fontSize={"2xl"}>RoomEase</Text>
           </Box>
           <HStack spacing={6} pr={"10px"}>
-            <ReactRouterLink to="/userAccess">
+            <ReactRouterLink to="/login" >
               <Button w={"100px"} variant={"loginPrimary"}>
                 Login
               </Button>
             </ReactRouterLink>
-            <ReactRouterLink to="/userAccess">
+            <ReactRouterLink to="/signup">
               <Button variant={"loginOutline"} w={"100px"}>
                 Sign Up
               </Button>

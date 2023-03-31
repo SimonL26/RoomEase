@@ -19,15 +19,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const signUpSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
-  confirmPassword: z.string().min(8)
+  password: z.string().min(8, "Password must not be empty"),
+  confirmPassword: z.string().min(8, "Must match to password")
 }).superRefine(({confirmPassword, password}, ctx) => {
-  if (confirmPassword !== password){
-    ctx.addIssue({
-      code: ZodIssueCode.custom,
-      message: "The password did not match!",
-      path: ['confirmPassword']
-    })
+    if (confirmPassword !== password){
+      ctx.addIssue({
+        code: ZodIssueCode.custom,
+        message: "Password did not match!",
+        path: ['confirmPassword']
+      })
   }
 })
 
@@ -44,68 +44,57 @@ const RegisterForm = () => {
   }
   return (
     <>
-      <Box w={"300px"} pb={"50px"}>
-        <Container as={"form"} onSubmit={handleSubmit(onSubmit)}>
-          <Box textAlign={"center"}>
-            <Heading fontSize={"20px"}>CREATE ACCOUNT</Heading>
-          </Box>
-
-          <FormControl id="signupEmail" isInvalid={!!errors.email}>
-            <FormLabel>Email:</FormLabel>
-            <Input type={"email"} bg={"white"} placeholder={"Your Email"} {...register("email")}/>
-            <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl id="signupPassword" mt={"10px"} isInvalid={!!errors.password}>
-            <FormLabel mb={0}>Password:</FormLabel>
-            <FormHelperText m={"0px 0px 5px 5px"}>
-              You password must have:
-              <UnorderedList>
-                <ListItem>A minimum of 8 characters</ListItem>
-                <ListItem>A lowercase character</ListItem>
-                <ListItem>An uppercase character</ListItem>
-                <ListItem>A numeric character</ListItem>
-              </UnorderedList>
-            </FormHelperText>
-            <Input
-              type={"password"}
-              bg={"white"}
-              placeholder={"Your Password"}
-              {...register("password")}
-            />
-            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl id="confirmPassword" mt={"10px"} isInvalid={!!errors.confirmPassword}>
-            <FormLabel>Confirm New Password:</FormLabel>
-            <Input
-              type={"password"}
-              bg={"white"}
-              placeholder={"Re-enter Your Password"}
-              {...register("confirmPassword")}
-            />
-            <FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
-          </FormControl>
-
-          <Button
-            variant={"loginPrimary"}
-            w={"full"}
-            mt={"15px"}
-            type={"submit"}
-          >
-            Create Account
-          </Button>
-        </Container>
-
-        <Box textAlign={"center"} mt={"20px"}>
-          <Text>
-            Already have an account?
-            <Button variant={"link"} color={"blue"}>
-              Login here
-            </Button>
-          </Text>
+      <Container as={"form"} onSubmit={handleSubmit(onSubmit)}>
+        <Box textAlign={"center"}>
+          <Heading fontSize={"20px"}>CREATE ACCOUNT</Heading>
         </Box>
-      </Box>
+
+        <FormControl id="signupEmail" isInvalid={!!errors.email}>
+          <FormLabel>Email:</FormLabel>
+          <Input type={"email"} bg={"white"} placeholder={"Your Email"} {...register("email")}/>
+          <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+        </FormControl>
+
+        <FormControl id="signupPassword" mt={"10px"} isInvalid={!!errors.password}>
+          <FormLabel mb={0}>Password:</FormLabel>
+          <FormHelperText m={"0px 0px 5px 5px"}>
+            You password must have:
+            <UnorderedList>
+              <ListItem>A minimum of 8 characters</ListItem>
+              <ListItem>A lowercase character</ListItem>
+              <ListItem>An uppercase character</ListItem>
+              <ListItem>A numeric character</ListItem>
+            </UnorderedList>
+          </FormHelperText>
+          <Input
+            type={"password"}
+            bg={"white"}
+            placeholder={"Your Password"}
+            {...register("password")}
+          />
+          <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+        </FormControl>
+
+        <FormControl id="confirmPassword" mt={"10px"} isInvalid={!!errors.confirmPassword}>
+          <FormLabel>Confirm New Password:</FormLabel>
+          <Input
+            type={"password"}
+            bg={"white"}
+            placeholder={"Re-enter Your Password"}
+            {...register("confirmPassword")}
+          />
+          <FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
+        </FormControl>
+
+        <Button
+          variant={"loginPrimary"}
+          w={"full"}
+          mt={"15px"}
+          type={"submit"}
+        >
+          Create Account
+        </Button>
+      </Container>
     </>
   );
 };

@@ -37,56 +37,45 @@ const LoginForm = () => {
 
   return (
     <>
-      <Box w={"300px"} pb={"50px"}>
-        <Container as={"form"} onSubmit={handleSubmit(onSubmit)}>
-          <Box textAlign={"center"}>
-            <Heading fontSize={"20px"}>LOG IN</Heading>
-          </Box>
-
-          <FormControl id="loginEmail" isInvalid={!!errors.email}>
-            <FormLabel>Email:</FormLabel>
-            <Input
-              type={"email"}
-              bg={"white"}
-              placeholder={"Email"}
-              {...register("email")}
-            />
-            <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl id="loginPassword" isInvalid={!!errors.password}>
-            <FormLabel>Password:</FormLabel>
-            <Input
-              type={"password"}
-              bg={"white"}
-              placeholder={"Password"}
-              {...register("password")}
-            />
-            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-          </FormControl>
-
-          <Box display={"flex"} justifyContent={"flex-end"}>
-            <ReactRouterLink to="/forgotPassword">
-              <Button variant={"link"} fontSize={"14px"} color={"blue"}>
-                Forgot password?
-              </Button>
-            </ReactRouterLink>
-          </Box>
-
-          <Button variant={"loginPrimary"} w={"100%"} mt={"10px"} type="submit">
-            Log in
-          </Button>
-        </Container>
-
-        <Box mt={"20px"} textAlign={"center"}>
-          <Text>
-            Don't have an account?{" "}
-            <Button variant={"link"} color={"blue"}>
-              Create one here!
-            </Button>
-          </Text>
+      <Container as={"form"} onSubmit={handleSubmit(onSubmit)}>
+        <Box textAlign={"center"}>
+          <Heading fontSize={"20px"}>LOG IN</Heading>
         </Box>
-      </Box>
+
+        <FormControl id="loginEmail" isInvalid={!!errors.email}>
+          <FormLabel>Email:</FormLabel>
+          <Input
+            type={"email"}
+            bg={"white"}
+            placeholder={"Email"}
+            {...register("email")}
+          />
+          <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+        </FormControl>
+
+        <FormControl id="loginPassword" isInvalid={!!errors.password}>
+          <FormLabel>Password:</FormLabel>
+          <Input
+            type={"password"}
+            bg={"white"}
+            placeholder={"Password"}
+            {...register("password")}
+          />
+          <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+        </FormControl>
+
+        <Box display={"flex"} justifyContent={"flex-end"}>
+          <ReactRouterLink to="/forgotPassword">
+            <Button variant={"link"} fontSize={"14px"} color={"blue"}>
+              Forgot password?
+            </Button>
+          </ReactRouterLink>
+        </Box>
+
+        <Button variant={"loginPrimary"} w={"100%"} mt={"10px"} type="submit">
+          Log in
+        </Button>
+      </Container>
     </>
   );
 };
