@@ -38,7 +38,7 @@ const LoginForm = () => {
   return (
     <>
       <Container as={"form"} onSubmit={handleSubmit(onSubmit)}>
-        <Box textAlign={"center"}>
+        <Box textAlign={"center"} mb={"5px"}>
           <Heading fontSize={"20px"}>LOG IN</Heading>
         </Box>
 
