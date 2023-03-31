@@ -26,9 +26,11 @@ const LoginForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
 
+  // function called when submitting the form
+  // change when backend developed
   const onSubmit = (data: FieldValues) => {
     console.log(data);
   };
