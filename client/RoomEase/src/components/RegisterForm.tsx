@@ -42,6 +42,7 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm<SignUpFormData>({ resolver: zodResolver(signUpSchema) });
   const [hasLength, setHasLength] = useState(false);
   const [hasLowercase, setHasLowercase] = useState(false);
@@ -77,10 +78,19 @@ const RegisterForm = () => {
     }
   };
 
+  const resetRequirementStates = () =>{
+    setHasLength(false);
+    setHasLowercase(false);
+    setHasUppercase(false);
+    setHasNumber(false);
+  }
+
   const onSubmit = (data: FieldValues) => {
     // function called when submitting the form
     // change when backend developed
     console.log(data);
+    resetRequirementStates(); 
+    reset();
   };
 
   return (

@@ -27,12 +27,14 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
 
   // function called when submitting the form
   // change when backend developed
   const onSubmit = (data: FieldValues) => {
     console.log(data);
+    reset();
   };
 
   return (
