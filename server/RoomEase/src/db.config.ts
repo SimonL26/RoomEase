@@ -13,4 +13,5 @@ export const sequelizeConnection = new Sequelize(dbname, username, password, {
     host: host,
     port: port,
     dialect: 'postgres',
+    models: [__dirname + '/models']
 })

@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import { sequelizeConnection } from "./src/configs/db.config";
+import { sequelizeConnection } from "./src/db.config";
 
 dotenv.config();
 
@@ -16,13 +16,18 @@ app.use(
 )
 
 app.get('/', (req: Request, res: Response) => {
-    res.json({info: 'Testing Express js + Typescript and Postgres test reload'})
+    res.json({info: 'Testing Express js + Typescript and Postgre + Sequelize'})
 })
 
-app.listen(port, async () => {
+app.listen(port, () => {
     console.log(`App running on port ${port}`)
-    sequelizeConnection.authenticate().then(() => {
+    sequelizeConnection.authenticate().then(async () => {
         console.log("Connected to database roomease")
+        try {
+            await sequelizeConnection.sync({force: true})
+        } catch (error: any) {
+            console.log(error.message)
+        }
     }).catch((err: any) => {
         console.log(err.message)
     })
