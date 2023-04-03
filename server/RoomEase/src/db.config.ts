@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import dotenv from "dotenv";
+import User from "./models/user.model";
 
 dotenv.config();
 
@@ -13,5 +14,5 @@ export const sequelizeConnection = new Sequelize(dbname, username, password, {
     host: host,
     port: port,
     dialect: 'postgres',
-    models: [__dirname + '/models']
+    models: [User]
 })

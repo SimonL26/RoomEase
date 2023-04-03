@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { sequelizeConnection } from "./src/db.config";
+import userRouter from "./src/routes/user.route";
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.use(
 app.get('/', (req: Request, res: Response) => {
     res.json({info: 'Testing Express js + Typescript and Postgre + Sequelize'})
 })
+
+app.use("/users", userRouter);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}`)
