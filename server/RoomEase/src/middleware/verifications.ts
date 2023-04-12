@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user.model";
+import * as jwt from 'jsonwebtoken';
+
+interface CustomRequest extends Request {
+  token: string | jwt.JwtPayload;
+}
 
 const checkDuplicateEmail = async (
   req: Request,
@@ -32,6 +37,24 @@ const checkDuplicateEmail = async (
   }
 };
 
-export const verify = {
+const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+    const token = req.session?.token;
+
+    if (!token) {
+      return res.status(403).json({message: "No token provided!"})
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    (req as CustomRequest).token = decoded;
+    
+    next();
+  }catch(err){ 
+    res.status(401).json({message: "Please authenticate"})
+  }
+
+}
+export const verifications = {
   checkDuplicateEmail,
+  verifyToken
 };

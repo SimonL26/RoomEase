@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import User from "../models/user.model";
 import { hashSync, compareSync } from "bcrypt";
+import * as jwt from 'jsonwebtoken';
 
 const createUser = async (req: Request, res: Response) => {
   /**
@@ -44,10 +45,17 @@ const loginUser = async (req: Request, res: Response) => {
       if (!validatePassword) {
         res.status(401).json({ message: "Invalid Password!" });
       } else {
+
+        const token = jwt.sign({id: user.id, email: user.email}, process.env.JWT_SECRET as string, {expiresIn: 120})
+        
+
         return res.status(200).json({
           message: "successfully logged in",
-          user_id: user.id,
-          user_email: user.email,
+          user: {
+            _id: user.id,
+            email: user.email
+          },
+          token: token
         });
       }
     }

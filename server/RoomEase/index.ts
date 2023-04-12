@@ -3,18 +3,26 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { sequelizeConnection } from "./src/db.config";
 import authRouter from "./src/routes/auth.route";
+import cookieSession from "cookie-session";
+import cors from "cors";
 
 dotenv.config();
 
 const app: Application = express();
 const port = 5000;
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(
     bodyParser.urlencoded({
         extended: true,
     })
 )
+app.use(cookieSession({
+    name: "roomease-session",
+    secret: process.env.COOKIE_SECRET,
+    httpOnly: true
+}))
 
 app.get('/', (req: Request, res: Response) => {
     res.json({info: 'Testing Express js + Typescript and Postgre + Sequelize'})
