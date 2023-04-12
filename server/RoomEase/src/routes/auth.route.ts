@@ -1,15 +1,15 @@
 import { Router, Request, Response } from "express";
 
-const userRouter = Router();
+const authRouter = Router();
 
-userRouter.get('/login', (req: Request, res: Response) => {
+authRouter.get('/login', (req: Request, res: Response) => {
     console.log("you are in users/login")
     res.send("users log in route")
 })
 
-userRouter.get('/signup', (req: Request, res: Response) => {
+authRouter.get('/signup', (req: Request, res: Response) => {
     console.log("your are in users/signup")
     res.send("users sign up route")
 })
 
-export default userRouter;
+export default authRouter;
