@@ -11,7 +11,6 @@ const checkDuplicateEmail = async (
    * enters on registration already exists in the database,
    * if so return Error message on response.
    */
-
   try {
     const user = await User.findOne({
       where: {

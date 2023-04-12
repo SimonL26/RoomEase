@@ -20,7 +20,7 @@ app.get('/', (req: Request, res: Response) => {
     res.json({info: 'Testing Express js + Typescript and Postgre + Sequelize'})
 })
 
-app.use("/auth", authRouter);
+app.use("/api/auth", authRouter);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}`)

@@ -1,15 +1,12 @@
 import { Router, Request, Response } from "express";
+import { auth } from "../controllers/auth.controller";
+import { verify } from "../middleware/verify";
 
 const authRouter = Router();
 
-authRouter.get("/login", (req: Request, res: Response) => {
-  console.log("you are in users/login");
-  res.send("users log in route");
-});
-
-authRouter.get("/signup", (req: Request, res: Response) => {
-  console.log("your are in users/signup");
-  res.send("users sign up route");
-});
+// handle sign up
+authRouter.post("/signup", [verify.checkDuplicateEmail] ,auth.createUser)
+// handle log in
+authRouter.post("/login", auth.loginUser)
 
 export default authRouter;
