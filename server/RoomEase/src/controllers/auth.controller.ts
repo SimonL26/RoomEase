@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import User from "../models/user.model";
 import { hashSync, compareSync } from "bcrypt";
-import * as jwt from 'jsonwebtoken';
+import * as jwt from "jsonwebtoken";
 
 const createUser = async (req: Request, res: Response) => {
   /**
@@ -20,7 +20,7 @@ const createUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: "Unable to create the new user", err: error.message });
+      .json({ message: "Unable to create the new user", err: error.message, path: "/api/auth/signup" });
   }
 };
 
@@ -45,18 +45,22 @@ const loginUser = async (req: Request, res: Response) => {
       if (!validatePassword) {
         res.status(401).json({ message: "Invalid Password!" });
       } else {
+        const token = jwt.sign(
+          { id: user.id, email: user.email },
+          process.env.JWT_SECRET as string,
+          { expiresIn: 7200 }
+        );
 
-        const token = jwt.sign({id: user.id, email: user.email}, process.env.JWT_SECRET as string, {expiresIn: 120})
-        
-
-        return res.status(200).json({
-          message: "successfully logged in",
-          user: {
-            _id: user.id,
-            email: user.email
-          },
-          token: token
-        });
+        return res
+          .status(200)
+          .cookie("token", token, { httpOnly: true })
+          .json({
+            message: "successfully logged in",
+            user: {
+              _id: user.id,
+              email: user.email,
+            },
+          });
       }
     }
   } catch (error: any) {
@@ -67,8 +71,9 @@ const loginUser = async (req: Request, res: Response) => {
 };
 
 const logoutUser = async (req: Request, res: Response) => {
-
-}
+  res.clearCookie("token");
+  res.status(200).json({message: "Successfully logged out"})
+};
 
 const deleteUser = async (req: Request, res: Response) => {
   /**

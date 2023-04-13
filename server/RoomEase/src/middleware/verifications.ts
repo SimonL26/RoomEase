@@ -30,15 +30,17 @@ const checkDuplicateEmail = async (
     }
 
     next();
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
-      message: "Unable to validate email!",
+      message: "Unable to process sign up",
+      err: error.message
     });
   }
 };
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   try{
+    // change here
     const token = req.session?.token;
 
     if (!token) {
