@@ -6,7 +6,8 @@ import * as jwt from "jsonwebtoken";
 
 const createUser = async (req: Request, res: Response) => {
   /**
-   * handle user registration
+   * User registration.
+   * automatically generate user id using uuid v4 and hash password using bcrypt.
    */
   try {
     const newUser = await User.create({
@@ -20,13 +21,14 @@ const createUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: "Unable to create the new user", err: error.message, path: "/api/auth/signup" });
+      .json({ message: "Unable to create new user", error: error.message, path: "/api/auth/signup" });
   }
 };
 
 const loginUser = async (req: Request, res: Response) => {
   /**
-   * handle user login
+   * User login with password verification and token generation, 
+   * token is generated using jwt.
    */
   try {
     // find a user by its email
@@ -66,13 +68,16 @@ const loginUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: "Unable to process login", err: error.message });
+      .json({ message: "Unable to process login", error: error.message, path: "/api/auth/login"});
   }
 };
 
 const logoutUser = async (req: Request, res: Response) => {
+  /**
+   * Logging out users by clearing browser token cookie.
+   */
   res.clearCookie("token");
-  res.status(200).json({message: "Successfully logged out"})
+  return res.status(200).json({message: "Successfully logged out"});
 };
 
 const deleteUser = async (req: Request, res: Response) => {

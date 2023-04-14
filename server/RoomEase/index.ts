@@ -5,6 +5,7 @@ import { sequelizeConnection } from "./src/db.config";
 import authRouter from "./src/routes/auth.route";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import testRoute from "./src/routes/test.route";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use("/api/auth", authRouter);
+app.use("/api/test", testRoute);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}`)

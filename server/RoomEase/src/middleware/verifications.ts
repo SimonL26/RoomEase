@@ -12,7 +12,7 @@ const checkDuplicateEmail = async (
   next: NextFunction
 ) => {
   /**
-   * This is a validator function, it checks whether the email that the user
+   * This is a validator function, checks whether the email that the user
    * enters on registration already exists in the database,
    * if so return Error message on response.
    */
@@ -33,26 +33,30 @@ const checkDuplicateEmail = async (
   } catch (error: any) {
     return res.status(500).json({
       message: "Unable to process sign up",
-      err: error.message
+      error: error.message
     });
   }
 };
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+  /**
+   * Verify jwt token inside cookies is valid
+   */
   try{
     // change here
-    const token = req.session?.token;
+    const token = req.cookies.token;
 
     if (!token) {
-      return res.status(403).json({message: "No token provided!"})
+      return res.status(401).json({message: "No token provided!"})
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
     (req as CustomRequest).token = decoded;
     
     next();
-  }catch(err){ 
-    res.status(401).json({message: "Please authenticate"})
+  }catch(error: any){ 
+    res.clearCookie("token")
+    res.status(401).json({message: "Token expired, please log in again", error: error.message})
   }
 
 }
