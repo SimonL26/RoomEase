@@ -11,6 +11,7 @@ import {
   ListItem,
   List,
   ListIcon,
+  InputGroup,
   Alert,
   AlertIcon,
   AlertDescription,
@@ -22,7 +23,9 @@ import { z, ZodIssueCode } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { AiFillCloseCircle, AiFillCheckCircle } from "react-icons/ai";
+import ShowPassword from "./ShowPassword";
 import axios from 'axios';
+
 
 const signUpSchema = z
   .object({
@@ -53,6 +56,7 @@ const RegisterForm = () => {
   const [hasLowercase, setHasLowercase] = useState(false);
   const [hasUppercase, setHasUppercase] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [isRegisterSuccess, setRegisterSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegisterFailed, setRegisterFailed] = useState(false);
@@ -86,6 +90,10 @@ const RegisterForm = () => {
       setHasNumber(false);
     }
   };
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  }
 
   const resetRequirementStates = () =>{
     setHasLength(false);
@@ -209,13 +217,16 @@ const RegisterForm = () => {
               </ListItem>
             </List>
           </FormHelperText>
-          <Input
-            type={"password"}
-            bg={"white"}
-            placeholder={"Your Password"}
-            {...register("password")}
-            onChange={handlePasswordChange}
-          />
+          <InputGroup> 
+            <Input
+              type={showPassword ? "text" : "password"}
+              bg={"white"}
+              placeholder={"Your Password"}
+              {...register("password")}
+              onChange={handlePasswordChange}
+            />
+            <ShowPassword show={showPassword} handleShow={handleShowPassword}/> 
+          </InputGroup>
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
 

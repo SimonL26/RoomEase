@@ -2,18 +2,20 @@ import {
   FormControl,
   FormLabel,
   Button,
-  Text,
   Input,
   Box,
   FormErrorMessage,
   Container,
   Heading,
+  InputGroup,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { FieldValues } from "react-hook-form/dist/types";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { useState } from "react";
+import ShowPassword from "./ShowPassword";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -29,6 +31,12 @@ const LoginForm = () => {
     formState: { errors },
     reset
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
+
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
 
   // function called when submitting the form
   // change when backend developed
@@ -57,12 +65,16 @@ const LoginForm = () => {
 
         <FormControl id="loginPassword" isInvalid={!!errors.password}>
           <FormLabel>Password:</FormLabel>
-          <Input
-            type={"password"}
-            bg={"white"}
-            placeholder={"Password"}
-            {...register("password")}
-          />
+
+          <InputGroup>
+            <Input
+              type={showPassword ? "text" : "password"}
+              bg={"white"}
+              placeholder={"Password"}
+              {...register("password")}
+            />
+            <ShowPassword show={showPassword} handleShow={handleShowPassword}/>
+          </InputGroup>
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
 
