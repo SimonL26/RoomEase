@@ -17,7 +17,7 @@ const Logins = () => {
         >
           <Container textAlign={"center"}>
             <ReactRouterLink to="/">
-              <Text m={"20px 0"} fontSize={"50px"}>RoomEase</Text>
+              <Text m={"20px 0 10px 0"} fontSize={"50px"}>RoomEase</Text>
             </ReactRouterLink>
           </Container>
           
