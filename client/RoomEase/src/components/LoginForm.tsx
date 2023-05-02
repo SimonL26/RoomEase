@@ -34,13 +34,9 @@ const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
-
-  // function called when submitting the form
-  // change when backend developed
   const onSubmit = (data: FieldValues) => {
+    // function called when submitting the form
+    // change when backend developed
     console.log(data);
     reset();
   };
@@ -73,7 +69,7 @@ const LoginForm = () => {
               placeholder={"Password"}
               {...register("password")}
             />
-            <ShowPassword show={showPassword} handleShow={handleShowPassword}/>
+            <ShowPassword show={showPassword} handleShow={() => {setShowPassword(!showPassword)}}/>
           </InputGroup>
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>

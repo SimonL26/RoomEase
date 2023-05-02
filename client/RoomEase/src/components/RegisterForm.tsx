@@ -17,15 +17,16 @@ import {
   AlertDescription,
   CloseButton,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import { FieldValues } from "react-hook-form/dist/types";
+import { useForm, SubmitHandler } from "react-hook-form";
+// import { FieldValues } from "react-hook-form/dist/types";
 import { z, ZodIssueCode } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiFillCloseCircle, AiFillCheckCircle } from "react-icons/ai";
 import ShowPassword from "./ShowPassword";
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const signUpSchema = z
   .object({
@@ -49,7 +50,7 @@ const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
     reset
   } = useForm<SignUpFormData>({ resolver: zodResolver(signUpSchema) });
   const [hasLength, setHasLength] = useState(false);
@@ -57,10 +58,17 @@ const RegisterForm = () => {
   const [hasUppercase, setHasUppercase] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isRegisterSuccess, setRegisterSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isRegisterFailed, setRegisterFailed] = useState(false);
+  const navigate = useNavigate(); // access navigate function to allow redirect
 
+  useEffect(() => {
+    if (isSubmitSuccessful){
+      setHasLength(false);
+      setHasLowercase(false);
+      setHasUppercase(false);
+      setHasNumber(false);
+      reset();
+    }
+  }, [isSubmitSuccessful])
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     /* function that handles password requirement check */
@@ -91,76 +99,46 @@ const RegisterForm = () => {
     }
   };
 
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword);
-  }
+  // const resetRequirementStates = () =>{
+  //   // resets password requirements state on form submit
+  //   setHasLength(false);
+  //   setHasLowercase(false);
+  //   setHasUppercase(false);
+  //   setHasNumber(false);
+  // }
 
-  const resetRequirementStates = () =>{
-    setHasLength(false);
-    setHasLowercase(false);
-    setHasUppercase(false);
-    setHasNumber(false);
-  }
-
-  const onSubmit = (data: FieldValues) => {
-    // function called when submitting the sign up form
-    const api_url = "http://localhost:5000/api/auth/signup";
-    // use axios to send post request
-    axios
-      .post(api_url, { email: data.email, password: data.password })
-      .then((res) => {
-        // if the response is 200 therefore success, 
-        if (res.status == 200) {
-          //set the success state to true
-          //such that the alert is visible by the user
-          setRegisterSuccess(true);
-          // handle redirect to /login page.
-        }
-        console.log("then", res);
-      })
-      .catch((err) => {
-        if (err.response) {
-          setRegisterFailed(true)
-          setErrorMessage(err.response.data.message)
-        } else if (err.request) {
-          console.log("caught request error", err.request);
-        } else {
-          console.log("Error:", err.message);
-        }
+  const registerUser = async (data: SignUpFormData) => {
+    try {
+      // function called when submitting the sign up form
+      const api_url = "http://localhost:5000/api/auth/signup";
+      // use axios to send post request
+      const response = await axios.post(api_url, {
+        email: data.email,
+        password: data.password,
       });
-    resetRequirementStates();
-    reset();
+      // if success use toast to notify 
+      toast.success("Successfully registered!", { position: "top-right" });
+      // then navigate to login page
+      navigate("/login");
+    } catch (error: any) {
+      const errMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      toast.error(errMessage, { position: "top-right" });
+    }
   };
 
-  const onSuccessAlertClose = () => {
-    // function that handles the close button of the alert box
-    setRegisterSuccess(false)
-  }
-
-  const onFailAlertClose = () => {
-    // function that handles the close button of the alert box
-    setRegisterFailed(false)
-  }
+  const onSubmit: SubmitHandler<SignUpFormData> = (data) => {
+    console.log("Submit was called")
+    registerUser(data)
+  };
 
   return (
     <>
       <Container as={"form"} onSubmit={handleSubmit(onSubmit)}>
-        {/*Alert box for the failed registration */}
-        <Alert status="error" mb={"10px"} display={isRegisterFailed ? "flex" : "none"}>
-          <AlertIcon />
-          <AlertDescription>
-            {errorMessage}
-          </AlertDescription>
-          <CloseButton right={-5} position={"relative"} onClick={onFailAlertClose}/>
-        </Alert>
-        {/*Alert box for the successful registration, displays none if the state is false.*/}
-        <Alert status="success" mb={"10px"} display={isRegisterSuccess ? "flex" : "none"}>
-          <AlertIcon />
-          <AlertDescription>
-          Successfully registered
-          </AlertDescription>
-          <CloseButton right={-5} position={"relative"} onClick={onSuccessAlertClose}/>
-        </Alert>
         {/* Form body */}
         <Box textAlign={"center"} mb={"5px"}>
           <Heading fontSize={"20px"}>CREATE ACCOUNT</Heading>
@@ -225,7 +203,7 @@ const RegisterForm = () => {
               {...register("password")}
               onChange={handlePasswordChange}
             />
-            <ShowPassword show={showPassword} handleShow={handleShowPassword}/> 
+            <ShowPassword show={showPassword} handleShow={() => {setShowPassword(!showPassword)}}/> 
           </InputGroup>
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
