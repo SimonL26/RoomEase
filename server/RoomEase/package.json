@@ -28,7 +28,8 @@
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.30.0",
     "sequelize-typescript": "^2.1.5",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
