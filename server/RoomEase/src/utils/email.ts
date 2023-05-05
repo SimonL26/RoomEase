@@ -21,6 +21,7 @@ export default class Email {
     }
 
     private newTransport() {
+        // function that sets a new Transport with nodemailer
         return nodemailer.createTransport({
             ...smtp,
             auth: {
@@ -31,6 +32,7 @@ export default class Email {
     }
 
     private async send(template: string, subject: string){
+        // function to handle email sending with nodemailer
         const html = pug.renderFile(`${__dirname}/../views/${template}.pug`, {
             subject,
             url: this.url
@@ -49,6 +51,7 @@ export default class Email {
     }
 
     async sendVerification() {
+        // handle sending verification emails
         await this.send('verifyCode', 'Your account verification code');
     }
 }

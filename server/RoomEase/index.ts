@@ -55,7 +55,7 @@ app.use(
     }
 );
 
-// DB connection
+// app activation with DB connection
 app.listen(port, () => {
     console.log(`App running on port ${port}`)
     sequelizeConnection.authenticate().then(async () => {
