@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
-const Home = () => {
+const HomePage = () => {
   return (
     <Grid
       templateAreas={`"main" "subs" "footer"`}
@@ -47,4 +47,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

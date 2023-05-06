@@ -3,27 +3,38 @@ import ReactDOM from "react-dom/client";
 import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import Logins from "./routes/Logins";
+import LoginPage from "./routes/LoginPage";
+import RegisterPage from "./routes/RegisterPage";
 import NotFoundErrorPage from "./routes/NotFoundErrorPage";
-import Home from "./routes/Home";
+import HomePage from "./routes/HomePage";
+import EmailVerificationPage from "./routes/EmailVerificationPage";
 import { theme } from "./theme";
-import Register from "./routes/Register";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <HomePage />,
     errorElement: <NotFoundErrorPage />,
   },
   {
     path: "/login",
-    element: <Logins />
+    element: <LoginPage />
   },
   {
     path: "/signup",
-    element: <Register />
+    element: <RegisterPage />
+  },
+  {
+    path: "/verifyemail",
+    element: <EmailVerificationPage />,
+    children: [
+      {
+        path: ":verificationCode",
+        element: <EmailVerificationPage />
+      }
+    ]
   }
 ]);
 

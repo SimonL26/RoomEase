@@ -1,8 +1,9 @@
 import { Flex, VStack, Text, Container, Box, Button } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
-import RegisterForm from "../components/RegisterForm";
+import LoginForm from "../components/LoginForm";
 
-const Register = () => {
+
+const LoginPage = () => {
   return (
     <>
       <Flex justifyContent="center" height={"full"}>
@@ -12,24 +13,22 @@ const Register = () => {
           boxShadow={"lg"}
           // boxSize={{ base: "md", lg: "xl", md: "lg" }}
           m={{ base: "50px 0", lg: "75px 0" }}
-          w={{ base: "350px", lg: "450px", sm: "350px", md: "400px" }}
+          w={{ base: "350px", lg: "450px", sm:"350px", md:"400px"}}
         >
           <Container textAlign={"center"}>
             <ReactRouterLink to="/">
-              <Text m={"20px 0 10px 0"} fontSize={"50px"}>
-                RoomEase
-              </Text>
+              <Text m={"20px 0 10px 0"} fontSize={"50px"}>RoomEase</Text>
             </ReactRouterLink>
           </Container>
-
+          
           <Box w={"300px"} pb={"50px"}>
-            <RegisterForm />
-            <Box textAlign={"center"} mt={"20px"}>
+            <LoginForm />
+            <Box mt={"20px"} textAlign={"center"}>
               <Text>
-                Already have an account?
-                <ReactRouterLink to={"/login"}>
+                Don't have an account?{" "}
+                <ReactRouterLink to={"/signup"}>
                   <Button variant={"link"} color={"blue"}>
-                    Login here
+                    Create one here!
                   </Button>
                 </ReactRouterLink>
               </Text>
@@ -41,4 +40,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default LoginPage;
