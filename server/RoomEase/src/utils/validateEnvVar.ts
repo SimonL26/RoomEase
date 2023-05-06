@@ -6,6 +6,7 @@ const validateEnv = () => {
     PGPORT: port(),
     PGUSER: str(),
     PGPASSWORD: str(),
+    PGDATABASE: str(),
 
     COOKIE_SECRET: str(),
 
