@@ -11,7 +11,8 @@ import AppError from "../utils/appError";
 
 const createUser = async (
   req: Request<{}, {}, RegisterUserInput>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   /**
    * User registration.
@@ -64,6 +65,7 @@ const createUser = async (
       error: error.message,
       path: "/api/auth/signup",
     });
+    next(error)
   }
 };
 
@@ -102,6 +104,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
       config.get<string>("jwtSecret"),
       { expiresIn: 7200 }
     );
+
     return res
       .status(200)
       .cookie("token", token, { httpOnly: true })
@@ -118,12 +121,14 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
       error: error.message,
       path: "/api/auth/login",
     });
+    next(error);
   }
 };
 
 const verifyEmailHandler = async (
   req: Request<VerifyEmailInput>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try{
     const { verificationCode } = req.params
@@ -144,11 +149,12 @@ const verifyEmailHandler = async (
         message: "Email successfully verified"
       });
     }
-  }catch (err: any){
+  }catch (error: any){
     res.status(500).json({
       status: 'error',
       message: 'Unable to verify email.'
-    })
+    });
+    next(error);
   }
 };
 
