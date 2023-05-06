@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express, { Application, NextFunction, Request, Response } from "express";
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -7,8 +8,6 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import testRoute from "./src/routes/test.route";
 import AppError from "./src/utils/appError";
-
-dotenv.config();
 
 // app initialization
 const app: Application = express();

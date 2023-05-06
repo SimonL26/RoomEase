@@ -1,3 +1,4 @@
+//require('dotenv').config();
 import { Sequelize } from "sequelize-typescript";
 import User from "./models/user.model";
 import config from "config";
@@ -8,7 +9,7 @@ const postgres = config.get<{
     user: string;
     password: string;
     database: string;
-}>("postgresConnection")
+}>("postgresConfig")
 
 // const host = process.env.PGHOST as string;
 // const port = parseInt(process.env.PORT || "5432") as number;

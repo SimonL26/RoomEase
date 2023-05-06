@@ -1,10 +1,10 @@
 export default {
-  postgresConnection: {
-    host: "PGHOST",
-    port: "PGPORT",
-    user: "PGUSER",
-    password: "PGPASSWORD",
-    database: "PGDATABASE",
+  postgresConfig: {
+    host: "POSTGRES_HOST",
+    port: "POSTGRES_PORT",
+    user: "POSTGRES_USER",
+    password: "POSTGRES_PASSWORD",
+    database: "POSTGRES_DB",
   },
 
   cookieSecret: "COOKIE_SECRET",
