@@ -18,6 +18,7 @@ authRouter.post(
 );
 // handle log in
 authRouter.post("/login", validateSchema(loginUserSchema), auth.loginUser);
+
 // handle user email verification
 authRouter.get(
   "/verifyemail/:verificationCode",
