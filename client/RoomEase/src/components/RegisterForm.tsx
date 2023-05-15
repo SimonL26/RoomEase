@@ -99,14 +99,6 @@ const RegisterForm = () => {
     }
   };
 
-  // const resetRequirementStates = () =>{
-  //   // resets password requirements state on form submit
-  //   setHasLength(false);
-  //   setHasLowercase(false);
-  //   setHasUppercase(false);
-  //   setHasNumber(false);
-  // }
-
   const registerUser = async (data: SignUpFormData) => {
     try {
       // function called when submitting the sign up form

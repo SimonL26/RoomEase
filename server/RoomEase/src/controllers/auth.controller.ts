@@ -36,7 +36,7 @@ const createUser = async (
     // Sending Verification email
     const redirectUrl = `${config.get<string>(
       "origin"
-    )}/verification/${verificationCode}`;
+    )}/verifyemail/${verificationCode}`;
 
     if (newUser) {
       // if newUser is created -> send new email
