@@ -12,10 +12,6 @@ import {
   List,
   ListIcon,
   InputGroup,
-  Alert,
-  AlertIcon,
-  AlertDescription,
-  CloseButton,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 // import { FieldValues } from "react-hook-form/dist/types";
@@ -24,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { AiFillCloseCircle, AiFillCheckCircle } from "react-icons/ai";
 import ShowPassword from "./ShowPassword";
-import axios from 'axios';
+import { authApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -102,16 +98,12 @@ const RegisterForm = () => {
   const registerUser = async (data: SignUpFormData) => {
     try {
       // function called when submitting the sign up form
-      const api_url = "http://localhost:5000/api/auth/signup";
       // use axios to send post request
-      const response = await axios.post(api_url, {
-        email: data.email,
-        password: data.password,
-      });
+      const response = await authApi.post(`auth/signup`, data);
       // if success use toast to notify 
       toast.success("Successfully registered!", { position: "top-right" });
       // then navigate to login page
-      navigate("/login");
+      navigate("/verifyemail");
     } catch (error: any) {
       const errMessage =
         (error.response &&

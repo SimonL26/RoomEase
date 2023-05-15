@@ -10,11 +10,13 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import { Link as ReactRouterLink } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { authApi } from "../api/authApi";
+import { toast } from "react-toastify";
 
 const verificationSchema = z.object({
   verificationCode: z.string().min(1, "Verification Code must not be empty."),
@@ -24,13 +26,16 @@ type VerificationCodeData = z.infer<typeof verificationSchema>;
 
 const EmailVerificationPage = () => {
   const {
-    register,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful },
+    formState: { isSubmitSuccessful },
     reset,
+    setValue,
+    register
   } = useForm<VerificationCodeData>({
     resolver: zodResolver(verificationSchema),
   });
+  const { verificationCode } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -38,13 +43,34 @@ const EmailVerificationPage = () => {
     }
   }, [isSubmitSuccessful])
 
-  const verifyUser = async (data: VerificationCodeData) => {
+  useEffect(() => {
+    if (verificationCode) {
+      setValue("verificationCode", verificationCode);
+    }
+  },  [setValue]);
+
+  const verifyUserEmail = async (data: VerificationCodeData) => {
     // Function that handles user verification code submit.
-    return;
+    try{
+      const response = await authApi.get(`auth/verifyemail/${data.verificationCode}`);
+      toast.success("Successfully verified", {
+        position: "top-right"
+      });
+      navigate("/login")
+    } catch (error: any) {
+      const errMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      toast.error(errMessage, { position: "top-right" });
+    }
   }
   
-  const onFormSubmit = () => {
+  const onFormSubmit: SubmitHandler<VerificationCodeData> = (data) => {
     console.log("submitted");
+    verifyUserEmail(data);
   };
 
   return (
@@ -65,7 +91,7 @@ const EmailVerificationPage = () => {
           </Container>
 
           <Box w={"400px"} pb={"50px"}>
-            <Container as={"form"} onSubmit={onFormSubmit}>
+            <Container as={"form"} onSubmit={handleSubmit(onFormSubmit)}>
               <Box textAlign={"center"} mb={"5px"}>
                 <Heading fontSize={"20px"} mb={"20px"}>
                   VERIFY YOUR EMAIL
@@ -75,9 +101,10 @@ const EmailVerificationPage = () => {
               <FormControl id="verifyEmail">
                 <FormLabel>Enter verification code:</FormLabel>
                 <Input
+                  {...register("verificationCode")}
                   type={"text"}
                   bg={"white"}
-                  placeholder={"Enter here verification code"}
+                  name="verificationCode"
                 />
               </FormControl>
 
