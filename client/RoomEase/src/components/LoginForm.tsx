@@ -9,36 +9,65 @@ import {
   Heading,
   InputGroup,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import { FieldValues } from "react-hook-form/dist/types";
-import { z } from "zod";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { object, string, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link as ReactRouterLink } from "react-router-dom";
-import { useState } from "react";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import ShowPassword from "./ShowPassword";
+import useStore from "../store";
+import { authApi } from "../api/authApi";
+import { ILoginResponse } from "../api/types";
+import { toast } from "react-toastify";
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
+const loginSchema = object({
+  email: string().email(),
+  password: string(),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormData = TypeOf<typeof loginSchema>;
 
 const LoginForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    reset
+    formState: { errors, isSubmitSuccessful },
+    reset,
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
+  const store = useStore();
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false)
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful]);
 
-  const onSubmit = (data: FieldValues) => {
+  const loginUser = async (data: LoginFormData) => {
+    try {
+      store.setRequestLoading(true);
+      const response = await authApi.post<ILoginResponse>("/auth/login", data);
+      store.setRequestLoading(false);
+      toast(response.data.message, { position: "top-right" });
+      navigate("/changeDest");
+    } catch (error: any) {
+      store.setRequestLoading(false);
+      const response =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      toast.error(response, { position: "top-right" });
+    }
+  };
+
+  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
     // function called when submitting the form
     // change when backend developed
-    console.log(data);
-    reset();
+    console.log("submitted login");
+    loginUser(data);
   };
 
   return (
@@ -69,7 +98,12 @@ const LoginForm = () => {
               placeholder={"Password"}
               {...register("password")}
             />
-            <ShowPassword show={showPassword} handleShow={() => {setShowPassword(!showPassword)}}/>
+            <ShowPassword
+              show={showPassword}
+              handleShow={() => {
+                setShowPassword(!showPassword);
+              }}
+            />
           </InputGroup>
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
@@ -82,7 +116,13 @@ const LoginForm = () => {
           </ReactRouterLink>
         </Box>
 
-        <Button variant={"loginPrimary"} w={"100%"} mt={"10px"} type="submit">
+        <Button
+          isLoading={store.requestLoading}
+          variant={"loginPrimary"}
+          w={"100%"}
+          mt={"10px"}
+          type="submit"
+        >
           Log in
         </Button>
       </Container>
