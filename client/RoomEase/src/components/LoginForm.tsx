@@ -8,6 +8,7 @@ import {
   Container,
   Heading,
   InputGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { object, string, TypeOf } from "zod";
@@ -18,7 +19,6 @@ import ShowPassword from "./ShowPassword";
 import useStore from "../store";
 import { authApi } from "../api/authApi";
 import { ILoginResponse } from "../api/types";
-import { toast } from "react-toastify";
 
 const loginSchema = object({
   email: string().email(),
@@ -37,6 +37,7 @@ const LoginForm = () => {
   const store = useStore();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -49,17 +50,25 @@ const LoginForm = () => {
       store.setRequestLoading(true);
       const response = await authApi.post<ILoginResponse>("/auth/login", data);
       store.setRequestLoading(false);
-      toast(response.data.message, { position: "top-right" });
+      toast({
+        title: "Logged in",
+        status: "success",
+      });
+      console.log(response.data)
       navigate("/changeDest");
     } catch (error: any) {
       store.setRequestLoading(false);
-      const response =
+      const errMessage =
         (error.response &&
           error.response.data &&
           error.response.data.message) ||
         error.message ||
         error.toString();
-      toast.error(response, { position: "top-right" });
+      toast({
+        title: "Error occurred",
+        description: errMessage,
+        status: "error",
+      });
     }
   };
 

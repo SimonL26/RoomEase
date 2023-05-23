@@ -9,8 +9,6 @@ import NotFoundErrorPage from "./routes/NotFoundErrorPage";
 import HomePage from "./routes/HomePage";
 import EmailVerificationPage from "./routes/EmailVerificationPage";
 import { theme } from "./theme";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
   {
@@ -40,11 +38,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme} toastOptions={{defaultOptions: {position: "top-right", duration: 3000, isClosable: true}}}>
       <RouterProvider router={router} />
-      <ToastContainer position="top-right"
-      autoClose={3000}
-      hideProgressBar={true}/>
     </ChakraProvider>
   </React.StrictMode>
 );

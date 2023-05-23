@@ -12,6 +12,7 @@ import {
   List,
   ListIcon,
   InputGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 // import { FieldValues } from "react-hook-form/dist/types";
@@ -22,24 +23,22 @@ import { AiFillCloseCircle, AiFillCheckCircle } from "react-icons/ai";
 import ShowPassword from "./ShowPassword";
 import { authApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import useStore from "../store";
 import { GenericResponse } from "../api/types";
 
 const signUpSchema = object({
-    email: string().email(),
-    password: string().min(8, "Password must not be empty"),
-    confirmPassword: string().min(8, "Must match to password"),
-  })
-  .superRefine(({ confirmPassword, password }, ctx) => {
-    if (confirmPassword !== password) {
-      ctx.addIssue({
-        code: ZodIssueCode.custom,
-        message: "Password did not match!",
-        path: ["confirmPassword"],
-      });
-    }
-  });
+  email: string().email(),
+  password: string().min(8, "Password must not be empty"),
+  confirmPassword: string().min(8, "Must match to password"),
+}).superRefine(({ confirmPassword, password }, ctx) => {
+  if (confirmPassword !== password) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      message: "Password did not match!",
+      path: ["confirmPassword"],
+    });
+  }
+});
 
 export type SignUpFormData = TypeOf<typeof signUpSchema>;
 
@@ -48,10 +47,11 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitSuccessful },
-    reset
+    reset,
   } = useForm<SignUpFormData>({ resolver: zodResolver(signUpSchema) });
   const store = useStore();
   const navigate = useNavigate(); // access navigate function to allow redirect
+  const toast = useToast();
 
   // state that handles password input visual validation
   const [hasLength, setHasLength] = useState(false);
@@ -61,14 +61,14 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (isSubmitSuccessful){
+    if (isSubmitSuccessful) {
       setHasLength(false);
       setHasLowercase(false);
       setHasUppercase(false);
       setHasNumber(false);
       reset();
     }
-  }, [isSubmitSuccessful])
+  }, [isSubmitSuccessful]);
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     /* function that handles password requirement check */
@@ -108,8 +108,12 @@ const RegisterForm = () => {
       const response = await authApi.post<GenericResponse>(`auth/signup`, data);
       store.setRequestLoading(false);
 
-      // if success use toast to notify 
-      toast.success(response.data.message as string, { position: "top-right" });
+      // if success use toast to notify
+      toast({
+        title: "Account created",
+        description: response.data.message,
+        status: "success",
+      });
       // then navigate to login page
       navigate("/verifyemail");
     } catch (error: any) {
@@ -120,13 +124,17 @@ const RegisterForm = () => {
           error.response.data.message) ||
         error.message ||
         error.toString();
-      toast.error(errMessage, { position: "top-right" });
+      toast({
+        title: "Error occurred",
+        description: errMessage,
+        status: "error",
+      });
     }
   };
 
   const onSubmit: SubmitHandler<SignUpFormData> = (data) => {
-    console.log("Submit was called")
-    registerUser(data)
+    console.log("Submit was called");
+    registerUser(data);
   };
 
   return (
@@ -188,7 +196,7 @@ const RegisterForm = () => {
               </ListItem>
             </List>
           </FormHelperText>
-          <InputGroup> 
+          <InputGroup>
             <Input
               type={showPassword ? "text" : "password"}
               bg={"white"}
@@ -196,7 +204,12 @@ const RegisterForm = () => {
               {...register("password")}
               onChange={handlePasswordChange}
             />
-            <ShowPassword show={showPassword} handleShow={() => {setShowPassword(!showPassword)}}/> 
+            <ShowPassword
+              show={showPassword}
+              handleShow={() => {
+                setShowPassword(!showPassword);
+              }}
+            />
           </InputGroup>
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
@@ -216,7 +229,13 @@ const RegisterForm = () => {
           <FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
         </FormControl>
 
-        <Button isLoading={store.requestLoading} variant={"loginPrimary"} w={"full"} mt={"15px"} type={"submit"}>
+        <Button
+          isLoading={store.requestLoading}
+          variant={"loginPrimary"}
+          w={"full"}
+          mt={"15px"}
+          type={"submit"}
+        >
           Create Account
         </Button>
       </Container>
