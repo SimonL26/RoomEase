@@ -26,9 +26,9 @@ const RegisterPage = () => {
             <RegisterForm />
             <Box textAlign={"center"} mt={"20px"}>
               <Text>
-                Already have an account?
+                Already have an account? 
                 <ReactRouterLink to={"/login"}>
-                  <Button variant={"link"} color={"blue"}>
+                  <Button variant={"link"} color={"blue"} ml={"1"}>
                     Login here
                   </Button>
                 </ReactRouterLink>

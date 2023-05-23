@@ -9,25 +9,28 @@ import {
   FormControl,
   FormLabel,
   Input,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { z } from "zod";
+import { object, string, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "../api/authApi";
 import { toast } from "react-toastify";
+import useStore from "../store";
+import { GenericResponse } from "../api/types";
 
-const verificationSchema = z.object({
-  verificationCode: z.string().min(1, "Verification Code must not be empty."),
+const verificationSchema = object({
+  verificationCode: string().min(1, "Verification Code must not be empty."),
 });
 
-type VerificationCodeData = z.infer<typeof verificationSchema>;
+type VerificationCodeData = TypeOf<typeof verificationSchema>;
 
 const EmailVerificationPage = () => {
   const {
     handleSubmit,
-    formState: { isSubmitSuccessful },
+    formState: { errors, isSubmitSuccessful },
     reset,
     setValue,
     register
@@ -36,6 +39,7 @@ const EmailVerificationPage = () => {
   });
   const { verificationCode } = useParams();
   const navigate = useNavigate();
+  const store = useStore();
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -52,12 +56,15 @@ const EmailVerificationPage = () => {
   const verifyUserEmail = async (data: VerificationCodeData) => {
     // Function that handles user verification code submit.
     try{
-      const response = await authApi.get(`auth/verifyemail/${data.verificationCode}`);
+      store.setRequestLoading(true);
+      const response = await authApi.get<GenericResponse>(`auth/verifyemail/${data.verificationCode}`);
+      store.setRequestLoading(false);
       toast.success("Successfully verified", {
         position: "top-right"
       });
       navigate("/login")
     } catch (error: any) {
+      store.setRequestLoading(false);
       const errMessage =
         (error.response &&
           error.response.data &&
@@ -98,7 +105,7 @@ const EmailVerificationPage = () => {
                 </Heading>
               </Box>
 
-              <FormControl id="verifyEmail">
+              <FormControl id="verifyEmail" isInvalid={!!errors.verificationCode}>
                 <FormLabel>Enter verification code:</FormLabel>
                 <Input
                   {...register("verificationCode")}
@@ -106,6 +113,7 @@ const EmailVerificationPage = () => {
                   bg={"white"}
                   name="verificationCode"
                 />
+                <FormErrorMessage>{errors.verificationCode?.message}</FormErrorMessage>
               </FormControl>
 
               <Button
@@ -113,6 +121,7 @@ const EmailVerificationPage = () => {
                 w={"100%"}
                 mt={"10px"}
                 type="submit"
+                isLoading={store.requestLoading}
               >
                 Verify Email
               </Button>

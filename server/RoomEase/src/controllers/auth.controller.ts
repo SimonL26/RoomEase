@@ -110,7 +110,9 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
       .status(200)
       .cookie("token", token, { httpOnly: true })
       .json({
+        status: "success",
         message: "successfully logged in",
+        access_token: token,
         user: {
           _id: user.id,
           email: user.email,
@@ -140,9 +142,8 @@ const verifyEmailHandler = async (
         verificationCode: code
       }
     });
-
+    
     if (user){
-      
       user.verified = true;
       user.verificationCode = null;
       await user.save();

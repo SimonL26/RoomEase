@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 // import { FieldValues } from "react-hook-form/dist/types";
-import { z, ZodIssueCode } from "zod";
+import { object, string, ZodIssueCode, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { AiFillCloseCircle, AiFillCheckCircle } from "react-icons/ai";
@@ -23,12 +23,13 @@ import ShowPassword from "./ShowPassword";
 import { authApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useStore from "../store";
+import { GenericResponse } from "../api/types";
 
-const signUpSchema = z
-  .object({
-    email: z.string().email(),
-    password: z.string().min(8, "Password must not be empty"),
-    confirmPassword: z.string().min(8, "Must match to password"),
+const signUpSchema = object({
+    email: string().email(),
+    password: string().min(8, "Password must not be empty"),
+    confirmPassword: string().min(8, "Must match to password"),
   })
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {
@@ -40,7 +41,7 @@ const signUpSchema = z
     }
   });
 
-type SignUpFormData = z.infer<typeof signUpSchema>;
+export type SignUpFormData = TypeOf<typeof signUpSchema>;
 
 const RegisterForm = () => {
   const {
@@ -49,12 +50,15 @@ const RegisterForm = () => {
     formState: { errors, isSubmitSuccessful },
     reset
   } = useForm<SignUpFormData>({ resolver: zodResolver(signUpSchema) });
+  const store = useStore();
+  const navigate = useNavigate(); // access navigate function to allow redirect
+
+  // state that handles password input visual validation
   const [hasLength, setHasLength] = useState(false);
   const [hasLowercase, setHasLowercase] = useState(false);
   const [hasUppercase, setHasUppercase] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); // access navigate function to allow redirect
 
   useEffect(() => {
     if (isSubmitSuccessful){
@@ -98,13 +102,18 @@ const RegisterForm = () => {
   const registerUser = async (data: SignUpFormData) => {
     try {
       // function called when submitting the sign up form
+
+      store.setRequestLoading(true);
       // use axios to send post request
-      const response = await authApi.post(`auth/signup`, data);
+      const response = await authApi.post<GenericResponse>(`auth/signup`, data);
+      store.setRequestLoading(false);
+
       // if success use toast to notify 
-      toast.success("Successfully registered!", { position: "top-right" });
+      toast.success(response.data.message as string, { position: "top-right" });
       // then navigate to login page
       navigate("/verifyemail");
     } catch (error: any) {
+      store.setRequestLoading(false);
       const errMessage =
         (error.response &&
           error.response.data &&
@@ -207,7 +216,7 @@ const RegisterForm = () => {
           <FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
         </FormControl>
 
-        <Button variant={"loginPrimary"} w={"full"} mt={"15px"} type={"submit"}>
+        <Button isLoading={store.requestLoading} variant={"loginPrimary"} w={"full"} mt={"15px"} type={"submit"}>
           Create Account
         </Button>
       </Container>
